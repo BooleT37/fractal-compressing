@@ -1,5 +1,7 @@
 import math
 
+from models.Block import Block
+
 
 def fill_row_with_intervals(row_length, interval_max_length):
     """
@@ -21,3 +23,17 @@ def fill_row_with_intervals(row_length, interval_max_length):
         intervals.append(interval_length)
         cumulative_length_int += interval_length
     return intervals
+
+def generate_blocks_gtid(width, height, domain_max_width):
+    domains = []
+    domain_widths = fill_row_with_intervals(width, domain_max_width)
+    domain_heights = fill_row_with_intervals(height, domain_max_width)
+
+    coords_y = 0
+    for current_height in domain_heights:
+        coords_x = 0
+        for current_width in domain_widths:
+            domains.append(Block(current_width, current_height, (coords_x, coords_y)))
+            coords_x += current_width
+        coords_y += current_height
+    return domains

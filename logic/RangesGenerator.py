@@ -1,3 +1,6 @@
+from logic.GeneratorUtils import generate_blocks_gtid
+
+
 def generate_ranges(width, height, range_max_width):
     """
     :param width: int
@@ -5,4 +8,5 @@ def generate_ranges(width, height, range_max_width):
     :param range_max_width: int
     :return: list of blocks (Block)
     """
-    raise NotImplementedError()
+    domains = generate_blocks_gtid(width, height, range_max_width)
+    return domains
