@@ -2,6 +2,11 @@ import math
 
 
 def fill_row_with_intervals(row_length, interval_max_length):
+    """
+    :param row_length:
+    :param interval_max_length:
+    :return:
+    """
     if row_length == 0:
         return []
     intervals_fit = int(math.ceil(row_length / interval_max_length))
