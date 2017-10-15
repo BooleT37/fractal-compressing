@@ -24,7 +24,7 @@ def fill_row_with_intervals(row_length, interval_max_length):
         cumulative_length_int += interval_length
     return intervals
 
-def generate_blocks_gtid(width, height, domain_max_width):
+def generate_blocks_grid(width, height, domain_max_width):
     domains = []
     domain_widths = fill_row_with_intervals(width, domain_max_width)
     domain_heights = fill_row_with_intervals(height, domain_max_width)
