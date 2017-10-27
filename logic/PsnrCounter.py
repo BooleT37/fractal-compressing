@@ -7,7 +7,7 @@ def count_mse(pixels_list_1, pixels_list_2):
     for i in range(n):
         pixel1 = pixels_list_1[i]
         pixel2 = pixels_list_2[i]
-        summ += (pixel1[0] - pixel2[0]) ** 2
+        summ += (pixel1 - pixel2) ** 2
 
     mse = summ / n
     return mse
