@@ -1,5 +1,8 @@
 import math
 
+from PIL import Image as PilImage
+import numpy as np
+
 from logic.BlockUtils import matrix_from_block, get_range_width
 from logic.Constants import DOMAINS_DEPTH, PSNR_THRESHOLD, MAX_PSNR
 from logic.DomainsGenerator import generate_domains
@@ -9,6 +12,13 @@ from logic.PsnrCounter import count_psnr
 from logic.RangesGenerator import generate_ranges
 from models.EncodedImage import EncodedImage
 from models.TransformationInfo import TransformationInfo
+
+
+def encode_file(path):
+    image = PilImage.open(path)
+    matrix = np.array(image.getdata(), dtype=int).reshape(image.size[1], image.size[0])
+    image.close()
+    return encode(matrix)
 
 
 def encode(image):

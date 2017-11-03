@@ -1,0 +1,79 @@
+{% load static %}
+
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Сжатие изображений</title>
+    <link rel="stylesheet" href="{% static 'home.css' %}">
+    <script src="{% static 'home.js' %}"></script>
+</head>
+<body>
+    <div class="targetImage_col">
+        <form action="upload_target_image" method="post" enctype="multipart/form-data">
+             <div>
+                 <input type="hidden" name="blank_image_uploaded" value="{{blank_image_uploaded}}"/>
+                 <label for="target_image">Файл с изображением:</label><br/>
+                 <input type="file" id="target_image" name="target_image">
+             </div>
+             <div>
+               <button>Submit</button>
+             </div>
+        </form>
+        {% if target_image_uploaded == "True" %}
+            <div class="image_block">
+                <div>Превью:</div>
+                <div>
+                    <img src="{% static 'images/target_image.png' %}" alt="image"/>
+                </div>
+            </div>
+        {% else %}
+            <div class="imageNotUploaded">[Изображение не загружено]</div>
+        {% endif %}
+    </div>
+    <div class="blankImage_col">
+        <form action="upload_blank_image" method="post" enctype="multipart/form-data">
+             <div>
+                 <input type="hidden" name="target_image_uploaded" value="{{target_image_uploaded}}"/>
+                 <label for="blank_image">Исходное изображение:</label><br/>
+                 <input type="file" id="blank_image" name="blank_image">
+             </div>
+             <div>
+               <button>Submit</button>
+             </div>
+        </form>
+        {% if blank_image_uploaded == "True" %}
+            <div class="image_block">
+                <div>Превью:</div>
+                <div>
+                    <img src="{% static 'images/blank_image.png' %}" alt="image"/>
+                </div>
+            </div>
+        {% else %}
+            <div class="imageNotUploaded">[Изображение не загружено]</div>
+        {% endif %}
+    </div>
+    <div class="recodedImage_col">
+        {% if target_image_uploaded == "True" and blank_image_uploaded == "True" %}
+            <form action="recode_image" method="post">
+                <button>Преобразовать</button>
+            </form>
+        {% endif %}
+        {% if image_recoded == "True" %}
+            <div class="recodedImage">
+                <div>Преобразованное изображение:</div>
+                <img src="{% static 'images/recoded_image.png' %}" alt="image"/>
+                <form action="iterate_recode" method="post" class="iterate_recode_form">
+                    <button>Итерировать</button>
+                </form>
+            </div>
+        {% endif %}
+    </div>
+    <div class="clearButton">
+        <button type="button" onclick="window.location = '/home'">Очистить</button>
+    </div>
+</body>
+</html>

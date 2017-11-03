@@ -1,0 +1,30 @@
+body {
+    font: 16px Segoe UI, arial, sans-serif
+}
+
+.targetImage_col, .blankImage_col, .recodedImage_col {
+    display: inline-block;
+    vertical-align: top;
+    margin: 0 10px;
+}
+
+.image_block {
+    margin-top: 20px;
+}
+
+.imageNotUploaded {
+    margin-top: 20px;
+    color: gray;
+}
+
+.clearButton {
+    margin-top: 20px;
+}
+
+.recodedImage {
+    margin-top: 60px;
+}
+
+.iterate_recode_form {
+    margin-top: 20px;
+}

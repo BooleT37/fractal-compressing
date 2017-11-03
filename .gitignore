@@ -2,3 +2,6 @@
 pip-selfcheck.json
 .idea
 __pycache__
+/static/images/target_image.png
+/static/images/recoded_image.png
+/static/images/blank_image.png
