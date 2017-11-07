@@ -3,7 +3,6 @@ import unittest
 import numpy as np
 from PIL import Image as PilImage
 
-from logic.Constants import MAX_PSNR
 from logic.ImageEncoder import encode
 
 
@@ -14,4 +13,4 @@ class TestImageEncoder(unittest.TestCase):
         data = encode(matrix)
         self.assertGreater(len(data.transformations), 0)
         self.assertIsNotNone(data.transformations[0].transform_num)
-        self.assertLess(data.transformations[0].psnr, MAX_PSNR + 1)
+        self.assertGreater(data.transformations[0].psnr, 0)

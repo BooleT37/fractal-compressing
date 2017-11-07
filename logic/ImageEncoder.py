@@ -4,11 +4,11 @@ from PIL import Image as PilImage
 import numpy as np
 
 from logic.BlockUtils import matrix_from_block, get_range_width
-from logic.Constants import DOMAINS_DEPTH, PSNR_THRESHOLD, MAX_PSNR
+from logic.Constants import DOMAINS_DEPTH, DOMAIN_TO_RANGE_SIZE_RATIO
 from logic.DomainsGenerator import generate_domains
 from logic.ImageTransformer import rotate_image_90_degrees, reflect_image_horizontally, reflect_image_vertically, \
     resize_image
-from logic.PsnrCounter import count_psnr
+from logic.PsnrCounter import count_psnr, MseIsZeroException
 from logic.RangesGenerator import generate_ranges
 from models.EncodedImage import EncodedImage
 from models.TransformationInfo import TransformationInfo
@@ -16,9 +16,11 @@ from models.TransformationInfo import TransformationInfo
 
 def encode_file(path):
     image = PilImage.open(path)
-    matrix = np.array(image.getdata(), dtype=int).reshape(image.size[1], image.size[0])
+    matrix = np.array(image.getdata(), dtype='int16').reshape(image.size[1], image.size[0])
     image.close()
-    return encode(matrix)
+    encoded = encode(matrix)
+    # print(encoded)
+    return encoded
 
 
 def encode(image):
@@ -30,7 +32,7 @@ def encode(image):
     height = image.shape[1]
 
     range_width = get_range_width(width, height)
-    domain_width = range_width * 2
+    domain_width = range_width * DOMAIN_TO_RANGE_SIZE_RATIO
 
     ranges = generate_ranges(width, height, range_width)
     domains = generate_domains(width, height, domain_width, DOMAINS_DEPTH)
@@ -85,25 +87,24 @@ def find_best_transformation(image, range_matrix, domains):
     :param domains: models.Block
     :return: models.TransformationInfo.TransformationInfo
     """
-    min_psnr = MAX_PSNR
-    transformation_info_of_min_psnr = None
+    max_psnr = 0
+    transformation_info_of_max_psnr = None
 
     domain_index = 0
     for domain_block in domains:
         domain_block_resized = resize_image(matrix_from_block(image, domain_block), range_matrix.shape)
         transform_num = 0
-
         for transform in apply_transforms(domain_block_resized):
             length = range_matrix.shape[0] * range_matrix.shape[1]
-            psnr = count_psnr(transform.reshape(length), range_matrix.reshape(length))
-            if psnr < min_psnr:
+            try:
+                psnr = count_psnr(transform.reshape(length), range_matrix.reshape(length))
+            except MseIsZeroException:
+                psnr = float("inf")
+            if psnr > max_psnr:
                 transformation_info = TransformationInfo(domain_index, transform_num, psnr)
-                if psnr <= PSNR_THRESHOLD:
-                    return transformation_info
-                else:
-                    min_psnr = psnr
-                    transformation_info_of_min_psnr = transformation_info
+                max_psnr = psnr
+                transformation_info_of_max_psnr = transformation_info
             transform_num += 1
         domain_index += 1
 
-    return transformation_info_of_min_psnr
+    return transformation_info_of_max_psnr

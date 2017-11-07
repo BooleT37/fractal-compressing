@@ -35,6 +35,8 @@ def resize_image(matrix, new_shape):
     :param new_shape: tuple
     :return matrix: numpy.array (shape=new_shape, dtype="int8")
     """
+    if matrix.shape == new_shape:
+        return np.copy(matrix)
     return imresize(matrix, size=new_shape)
 
 

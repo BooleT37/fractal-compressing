@@ -2,7 +2,7 @@ from PIL import Image as PilImage
 import numpy as np
 
 from logic.BlockUtils import get_range_width, matrix_from_block, fill_submatrix
-from logic.Constants import DOMAINS_DEPTH
+from logic.Constants import DOMAINS_DEPTH, DOMAIN_TO_RANGE_SIZE_RATIO
 from logic.DomainsGenerator import generate_domains
 from logic.ImageTransformer import apply_inverse_affine_transform_by_num, resize_image
 from logic.RangesGenerator import generate_ranges
@@ -13,7 +13,8 @@ def decode_with_file(data, filename):
     initial_image_matrix = np.array(initial_image.getdata(), dtype='int16').reshape(initial_image.size[1],
                                                                                 initial_image.size[0])
     initial_image.close()
-    return decode(data, initial_image_matrix)
+    decoded = decode(data, initial_image_matrix)
+    return decoded
 
 
 def decode(data, initial_image):
@@ -26,7 +27,7 @@ def decode(data, initial_image):
     height = data.height
 
     range_width = get_range_width(width, height)
-    domain_width = range_width * 2
+    domain_width = range_width * DOMAIN_TO_RANGE_SIZE_RATIO
 
     ranges = generate_ranges(width, height, range_width)
     domains = generate_domains(width, height, domain_width, DOMAINS_DEPTH)
