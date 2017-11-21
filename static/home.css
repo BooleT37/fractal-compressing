@@ -28,3 +28,13 @@ body {
 .iterate_recode_form {
     margin-top: 20px;
 }
+
+#json {
+    display: none;
+    max-height: 400px;
+    overflow: scroll;
+    background: whitesmoke;
+    border: solid 1px gray;
+    padding: 4px;
+    margin-top: 10px;
+}

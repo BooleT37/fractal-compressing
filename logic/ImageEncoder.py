@@ -1,10 +1,10 @@
 import math
 
-from PIL import Image as PilImage
+import png
 import numpy as np
 
 from logic.BlockUtils import matrix_from_block, get_range_width
-from logic.Constants import DOMAINS_DEPTH, DOMAIN_TO_RANGE_SIZE_RATIO
+from logic.Constants import DOMAINS_DEPTH, DOMAIN_TO_RANGE_SIZE_RATIO, INFINITY
 from logic.DomainsGenerator import generate_domains
 from logic.ImageTransformer import rotate_image_90_degrees, reflect_image_horizontally, reflect_image_vertically, \
     resize_image
@@ -15,9 +15,8 @@ from models.TransformationInfo import TransformationInfo
 
 
 def encode_file(path):
-    image = PilImage.open(path)
-    matrix = np.array(image.getdata(), dtype='int16').reshape(image.size[1], image.size[0])
-    image.close()
+    image = png.Reader(path).read()
+    matrix = np.array(list(image[2])).reshape(image[1], image[0])
     encoded = encode(matrix)
     # print(encoded)
     return encoded
@@ -26,10 +25,14 @@ def encode_file(path):
 def encode(image):
     """
     :param image: np.ndarray
+    :param width: number
+    :param height: number
+    :param metadata: dict
     :return models.EncodedImage.EncodedImage
     """
+
     width = image.shape[1]
-    height = image.shape[1]
+    height = image.shape[0]
 
     range_width = get_range_width(width, height)
     domain_width = range_width * DOMAIN_TO_RANGE_SIZE_RATIO
@@ -37,9 +40,9 @@ def encode(image):
     ranges = generate_ranges(width, height, range_width)
     domains = generate_domains(width, height, domain_width, DOMAINS_DEPTH)
     return EncodedImage(
+        list(map(lambda range_block: find_best_transformation(image, matrix_from_block(image, range_block), domains), ranges)),
         width,
-        height,
-        list(map(lambda range_block: find_best_transformation(image, matrix_from_block(image, range_block), domains), ranges))
+        height
     )
 
 
@@ -99,7 +102,7 @@ def find_best_transformation(image, range_matrix, domains):
             try:
                 psnr = count_psnr(transform.reshape(length), range_matrix.reshape(length))
             except MseIsZeroException:
-                psnr = float("inf")
+                psnr = INFINITY
             if psnr > max_psnr:
                 transformation_info = TransformationInfo(domain_index, transform_num, psnr)
                 max_psnr = psnr

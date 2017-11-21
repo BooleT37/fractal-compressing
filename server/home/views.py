@@ -10,6 +10,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 TARGET_IMAGE_NAME = "target_image.png"
 BLANK_IMAGE_NAME = "blank_image.png"
 RECODED_IMAGE_NAME = "recoded_image.png"
+ENCODE_DATA_PATH = os.path.join(BASE_DIR, f'../static/encoded_data.json')
 
 
 def index(request):
@@ -49,7 +50,8 @@ def recode_image(request):
     recode_image_fn(
         get_image_path(TARGET_IMAGE_NAME),
         get_image_path(BLANK_IMAGE_NAME),
-        get_image_path(RECODED_IMAGE_NAME)
+        get_image_path(RECODED_IMAGE_NAME),
+        ENCODE_DATA_PATH
     )
     return HttpResponseRedirect('/home?target_image_uploaded=1&blank_image_uploaded=1&image_recoded=1')
 
@@ -59,9 +61,11 @@ def iterate_recode(request):
     recode_image_fn(
         get_image_path(TARGET_IMAGE_NAME),
         get_image_path(RECODED_IMAGE_NAME),
-        get_image_path(RECODED_IMAGE_NAME)
+        get_image_path(RECODED_IMAGE_NAME),
+        ENCODE_DATA_PATH
     )
     return HttpResponseRedirect('/home?target_image_uploaded=1&blank_image_uploaded=1&image_recoded=1')
+
 
 def write_image_to_disc(image_file, name):
     with open(get_image_path(name), 'wb+') as destination:

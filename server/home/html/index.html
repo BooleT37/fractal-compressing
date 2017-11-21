@@ -33,6 +33,9 @@
         {% else %}
             <div class="imageNotUploaded">[Изображение не загружено]</div>
         {% endif %}
+        <div class="clearButton">
+            <button type="button" onclick="window.location = '/home'">Очистить</button>
+        </div>
     </div>
     <div class="blankImage_col">
         <form action="upload_blank_image" method="post" enctype="multipart/form-data">
@@ -69,11 +72,10 @@
                 <form action="iterate_recode" method="post" class="iterate_recode_form">
                     <button>Итерировать</button>
                 </form>
+                <button type="button" id="toggleJson">Данные преобразования</button>
+                <pre id="json"></pre>
             </div>
         {% endif %}
-    </div>
-    <div class="clearButton">
-        <button type="button" onclick="window.location = '/home'">Очистить</button>
     </div>
 </body>
 </html>

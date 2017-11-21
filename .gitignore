@@ -5,3 +5,4 @@ __pycache__
 /static/images/target_image.png
 /static/images/recoded_image.png
 /static/images/blank_image.png
+/static/encoded_data.json
