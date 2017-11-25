@@ -1,11 +1,8 @@
-import numpy as np
-import png
-
 from logic.BlockUtils import get_range_width, matrix_from_block, fill_submatrix
-from logic.ColorsTransformer import adjust_brightness_and_contrast, adjust_reverse_brightness_and_contrast
+from logic.ColorsTransformer import adjust_brightness_and_contrast
 from logic.Constants import DOMAINS_DEPTH, DOMAIN_TO_RANGE_SIZE_RATIO
 from logic.DomainsGenerator import generate_domains
-from logic.ImageTransformer import apply_inverse_affine_transform_by_num, resize_image
+from logic.ImageTransformer import resize_image, apply_affine_transform_by_num
 from logic.RangesGenerator import generate_ranges
 
 
@@ -25,11 +22,13 @@ def decode(data, initial_image):
     domains = generate_domains(width, height, domain_width, DOMAINS_DEPTH)
 
     index = 0
-    for range_block in ranges:
+    print("\nFilling ranges:")
+    for index, range_block in enumerate(ranges):
+        print(f'{index + 1}...')
         trns_info = data.transformations[index]
         domain = domains[trns_info.domain_index]
         domain_matrix = matrix_from_block(initial_image, domain)
-        transformed_domain_matrix = apply_inverse_affine_transform_by_num(domain_matrix, trns_info.transform_num)
+        transformed_domain_matrix = apply_affine_transform_by_num(domain_matrix, trns_info.transform_num)
         resized_domain_matrix = resize_image(transformed_domain_matrix, (range_block.height, range_block.width))
         adjusted_domain_matrix = adjust_brightness_and_contrast(
             resized_domain_matrix,

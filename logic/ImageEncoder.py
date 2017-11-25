@@ -93,7 +93,7 @@ def find_best_transformation(image, range_matrix, domains, index):
     :param domains: models.Block
     :return: models.TransformationInfo.TransformationInfo
     """
-    print(f'{index}...')
+    print(f'{index + 1}...')
     max_psnr = 0
     transformation_info_of_max_psnr = None
 

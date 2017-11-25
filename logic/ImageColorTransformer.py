@@ -6,7 +6,7 @@ import png
 def make_grayscale(image):
     planes = image[3]['planes']
     array = np.array(list(image[2]), dtype='int16').reshape(image[1] * image[0] * planes)
-    grayscaled = make_array_grayscale(array, image[0], image[1], image[3]['alpha'])
+    grayscaled = make_array_grayscale(array, image[0], image[1], image[3]['planes'])
     image[3]['greyscale'] = True
     image[3]['alpha'] = False
     image[3]['planes'] = 1
@@ -18,6 +18,6 @@ def make_array_grayscale(array, width, height, planes):
 
     for i in range(height):
         for j in range(width):
-            index = i * j * planes
+            index = (j + i * width) * planes
             res[i, j] = round(array[index] * 0.3 + array[index + 1] * 0.59 + array[index + 2] * 0.11)
     return res

@@ -46,6 +46,7 @@ def apply_affine_transform_by_num(matrix, transform_num):
     :param transform_num: models.AffineTransformations.AffineTransformations
     :return:
     """
+    transform_num = AffineTransformations(transform_num)
     if transform_num == AffineTransformations.NONE:
         return matrix
     if transform_num == AffineTransformations.ROTATE_90:
