@@ -1,5 +1,10 @@
 class EncodedImage:
     def __init__(self, transformations, width, height):
+        """
+        :param transformations: models.TransformationInfo.TransformationInfo
+        :param width: number
+        :param height: number
+        """
         self.transformations = transformations
         self.width = width
         self.height = height

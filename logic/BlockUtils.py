@@ -21,11 +21,11 @@ def fill_submatrix(matrix, block, submatrix):
     :param submatrix: np.array
     :return: 
     """
-    x_start = block.coords[1]
+    x_start = block.coords[0]
     x_end = x_start + block.width
-    y_start = block.coords[0]
+    y_start = block.coords[1]
     y_end = y_start + block.height
-    matrix[x_start:x_end, y_start:y_end] = submatrix
+    matrix[y_start:y_end, x_start:x_end] = submatrix
 
 
 def get_range_width(image_width, image_height):

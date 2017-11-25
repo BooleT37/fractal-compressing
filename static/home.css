@@ -38,3 +38,7 @@ body {
     padding: 4px;
     margin-top: 10px;
 }
+
+.image_preview {
+    box-shadow: 1px 1px 3px 0 rgba(0, 0, 0, 0.2);
+}

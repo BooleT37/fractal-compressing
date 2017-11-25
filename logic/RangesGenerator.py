@@ -8,5 +8,5 @@ def generate_ranges(width, height, range_max_width):
     :param range_max_width: int
     :return: list of blocks (Block)
     """
-    domains = generate_blocks_grid(width, height, range_max_width)
-    return domains
+    ranges = generate_blocks_grid(width, height, range_max_width)
+    return ranges

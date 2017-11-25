@@ -2,6 +2,7 @@ import numpy as np
 import png
 
 from logic.BlockUtils import get_range_width, matrix_from_block, fill_submatrix
+from logic.ColorsTransformer import adjust_brightness_and_contrast, adjust_reverse_brightness_and_contrast
 from logic.Constants import DOMAINS_DEPTH, DOMAIN_TO_RANGE_SIZE_RATIO
 from logic.DomainsGenerator import generate_domains
 from logic.ImageTransformer import apply_inverse_affine_transform_by_num, resize_image
@@ -30,6 +31,11 @@ def decode(data, initial_image):
         domain_matrix = matrix_from_block(initial_image, domain)
         transformed_domain_matrix = apply_inverse_affine_transform_by_num(domain_matrix, trns_info.transform_num)
         resized_domain_matrix = resize_image(transformed_domain_matrix, (range_block.height, range_block.width))
-        fill_submatrix(initial_image, range_block, resized_domain_matrix)
+        adjusted_domain_matrix = adjust_brightness_and_contrast(
+            resized_domain_matrix,
+            trns_info.brightness,
+            trns_info.contrast
+        )
+        fill_submatrix(initial_image, range_block, adjusted_domain_matrix)
         index += 1
     return initial_image

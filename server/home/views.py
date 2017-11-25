@@ -1,8 +1,11 @@
 import os
+
+import png
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 
+from logic.ImageColorTransformer import make_grayscale
 from logic.ImageRecoder import recode_image as recode_image_fn
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -68,10 +71,15 @@ def iterate_recode(request):
 
 
 def write_image_to_disc(image_file, name):
-    with open(get_image_path(name), 'wb+') as destination:
+    path = get_image_path(name)
+    with open(path, 'wb+') as destination:
         for chunk in image_file.chunks():
             destination.write(chunk)
         destination.close()
+        image = png.Reader(path).read()
+        if not image[3]['greyscale']:
+            grayscaled = make_grayscale(image)
+            grayscaled.save(path)
 
 
 def has_bool_value(query_dict, key):

@@ -4,6 +4,7 @@ import png
 import numpy as np
 
 from logic.BlockUtils import matrix_from_block, get_range_width
+from logic.ColorsTransformer import count_optimal_brightness_and_contrast, adjust_brightness_and_contrast
 from logic.Constants import DOMAINS_DEPTH, DOMAIN_TO_RANGE_SIZE_RATIO, INFINITY
 from logic.DomainsGenerator import generate_domains
 from logic.ImageTransformer import rotate_image_90_degrees, reflect_image_horizontally, reflect_image_vertically, \
@@ -16,6 +17,7 @@ from models.TransformationInfo import TransformationInfo
 
 def encode_file(path):
     image = png.Reader(path).read()
+
     matrix = np.array(list(image[2])).reshape(image[1], image[0])
     encoded = encode(matrix)
     # print(encoded)
@@ -39,8 +41,9 @@ def encode(image):
 
     ranges = generate_ranges(width, height, range_width)
     domains = generate_domains(width, height, domain_width, DOMAINS_DEPTH)
+    print(f'Encoding {len(ranges)} ranges')
     return EncodedImage(
-        list(map(lambda range_block: find_best_transformation(image, matrix_from_block(image, range_block), domains), ranges)),
+        [find_best_transformation(image, matrix_from_block(image, range_block), domains, index) for index, range_block in enumerate(ranges)],
         width,
         height
     )
@@ -83,28 +86,31 @@ def apply_transforms(image):
     ]
 
 
-def find_best_transformation(image, range_matrix, domains):
+def find_best_transformation(image, range_matrix, domains, index):
     """
     :param image: np.ndarray
     :param range_matrix: np.ndarray
     :param domains: models.Block
     :return: models.TransformationInfo.TransformationInfo
     """
+    print(f'{index}...')
     max_psnr = 0
     transformation_info_of_max_psnr = None
 
     domain_index = 0
     for domain_block in domains:
-        domain_block_resized = resize_image(matrix_from_block(image, domain_block), range_matrix.shape)
+        domain_matrix_resized = resize_image(matrix_from_block(image, domain_block), range_matrix.shape)
+        brightness, contrast = count_optimal_brightness_and_contrast(domain_matrix_resized, range_matrix)
+        domain_matrix_adjusted = adjust_brightness_and_contrast(domain_matrix_resized, brightness, contrast)
         transform_num = 0
-        for transform in apply_transforms(domain_block_resized):
+        for domain_matrix_transformed in apply_transforms(domain_matrix_adjusted):
             length = range_matrix.shape[0] * range_matrix.shape[1]
             try:
-                psnr = count_psnr(transform.reshape(length), range_matrix.reshape(length))
+                psnr = count_psnr(domain_matrix_transformed.reshape(length), range_matrix.reshape(length))
             except MseIsZeroException:
                 psnr = INFINITY
             if psnr > max_psnr:
-                transformation_info = TransformationInfo(domain_index, transform_num, psnr)
+                transformation_info = TransformationInfo(domain_index, transform_num, brightness, contrast, psnr)
                 max_psnr = psnr
                 transformation_info_of_max_psnr = transformation_info
             transform_num += 1

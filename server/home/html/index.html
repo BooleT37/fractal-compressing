@@ -20,14 +20,14 @@
                  <input type="file" id="target_image" name="target_image">
              </div>
              <div>
-               <button>Submit</button>
+               <button id="submit_target_image" disabled="disabled">Submit</button>
              </div>
         </form>
         {% if target_image_uploaded == "True" %}
             <div class="image_block">
                 <div>Превью:</div>
                 <div>
-                    <img src="{% static 'images/target_image.png' %}" alt="image"/>
+                    <img class="image_preview" src="{% static 'images/target_image.png' %}" alt="image"/>
                 </div>
             </div>
         {% else %}
@@ -45,14 +45,14 @@
                  <input type="file" id="blank_image" name="blank_image">
              </div>
              <div>
-               <button>Submit</button>
+               <button id="submit_blank_image" disabled="disabled">Submit</button>
              </div>
         </form>
         {% if blank_image_uploaded == "True" %}
             <div class="image_block">
                 <div>Превью:</div>
                 <div>
-                    <img src="{% static 'images/blank_image.png' %}" alt="image"/>
+                    <img class="image_preview" src="{% static 'images/blank_image.png' %}" alt="image"/>
                 </div>
             </div>
         {% else %}
@@ -68,7 +68,7 @@
         {% if image_recoded == "True" %}
             <div class="recodedImage">
                 <div>Преобразованное изображение:</div>
-                <img src="{% static 'images/recoded_image.png' %}" alt="image"/>
+                <img class="image_preview" src="{% static 'images/recoded_image.png' %}" alt="image"/>
                 <form action="iterate_recode" method="post" class="iterate_recode_form">
                     <button>Итерировать</button>
                 </form>
