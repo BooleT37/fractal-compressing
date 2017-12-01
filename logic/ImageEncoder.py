@@ -33,6 +33,11 @@ def encode(image):
     :return models.EncodedImage.EncodedImage
     """
 
+    mean = np.mean(image)
+    std = np.std(image)
+
+    image = (image - mean) / math.sqrt(std)
+
     width = image.shape[1]
     height = image.shape[0]
 
@@ -45,7 +50,9 @@ def encode(image):
     return EncodedImage(
         [find_best_transformation(image, matrix_from_block(image, range_block), domains, index) for index, range_block in enumerate(ranges)],
         width,
-        height
+        height,
+        mean,
+        std
     )
 
 

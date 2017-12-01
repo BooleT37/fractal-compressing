@@ -1,3 +1,5 @@
+import math
+
 from logic.BlockUtils import get_range_width, matrix_from_block, fill_submatrix
 from logic.ColorsTransformer import adjust_brightness_and_contrast
 from logic.Constants import DOMAINS_DEPTH, DOMAIN_TO_RANGE_SIZE_RATIO
@@ -21,7 +23,6 @@ def decode(data, initial_image):
     ranges = generate_ranges(width, height, range_width)
     domains = generate_domains(width, height, domain_width, DOMAINS_DEPTH)
 
-    index = 0
     print("\nFilling ranges:")
     for index, range_block in enumerate(ranges):
         print(f'{index + 1}...')
@@ -37,4 +38,6 @@ def decode(data, initial_image):
         )
         fill_submatrix(initial_image, range_block, adjusted_domain_matrix)
         index += 1
+
+    initial_image = initial_image * math.sqrt(data.std) + data.mean
     return initial_image
