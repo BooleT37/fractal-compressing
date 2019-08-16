@@ -1,4 +1,4 @@
-Django==1.11.6
+django>=1.11.23
 pytz==2017.2
 numpy==1.13.3
 scipy==0.19.1
